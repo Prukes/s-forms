@@ -136,6 +136,14 @@ export default class FormUtils {
     );
   }
 
+  static isFileUpload(question) {
+    return JsonLdUtils.hasValue(
+        question,
+        Constants.LAYOUT_CLASS,
+        Constants.LAYOUT.FILE
+    );
+  }
+
   static isSparqlInput(question) {
     return JsonLdUtils.hasValue(
       question,

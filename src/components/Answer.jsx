@@ -13,6 +13,7 @@ import Constants from "../constants/Constants";
 import { FormGenContext } from "../contexts/FormGenContext";
 import { ConfigurationContext } from "../contexts/ConfigurationContext";
 import QuestionStatic from "./QuestionStatic.jsx";
+import FileAnswer from "./answer/FileAnswer.jsx";
 
 const Answer = (props) => {
   const formGenContext = React.useContext(FormGenContext);
@@ -30,7 +31,8 @@ const Answer = (props) => {
       change[Constants.HAS_DATA_VALUE] = null;
     } else if (
       props.answer[Constants.HAS_OBJECT_VALUE] ||
-      FormUtils.isTypeahead(props.question)
+      FormUtils.isTypeahead(props.question) ||
+      FormUtils.isFileUpload(props.question)
     ) {
       change[Constants.HAS_OBJECT_VALUE] = {
         "@id": value,
@@ -157,6 +159,21 @@ const Answer = (props) => {
       />
     );
   };
+  const _renderFileUpload = (value, label, title) => {
+    return (
+        <FileAnswer
+            question={props.question}
+            answer={props.answer}
+            label={label}
+            title={title}
+            value={value}
+            onChange={handleValueChange}
+            onFileUpload={props.onFileUpload}
+            getFile={props.getFile}
+        />
+    );
+  };
+
 
   const _getLabel = (question) => {
     const label = JsonldUtils.getLocalized(
@@ -201,6 +218,8 @@ const Answer = (props) => {
     component = _renderSparqlInput(value, label, title);
   } else if (FormUtils.isTurtleInput(question)) {
     component = _renderTurtleInput(value, label, title);
+  } else if (FormUtils.isFileUpload(question)) {
+    component = _renderFileUpload(value,label,title);
   } else {
     component = _renderRegularInput(value, label, title);
   }

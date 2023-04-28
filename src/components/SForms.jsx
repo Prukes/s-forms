@@ -78,6 +78,9 @@ const SForms = forwardRef((props, ref) => {
           data={form}
           formQuestions={formProperties.formQuestions}
           isFormValid={props.isFormValid}
+          onFileUpload={props.onFileUpload}
+          getFile={props.getFile}
+          onFileDelete={props.onFileDelete}
         >
           <FormManager
             ref={ref}
@@ -99,6 +102,9 @@ SForms.propTypes = {
   fetchTypeAheadValues: PropTypes.func,
   isFormValid: PropTypes.func,
   loader: PropTypes.element,
+  onFileUpload: PropTypes.func,
+  getFile: PropTypes.func,
+  onFileDelete: PropTypes.func
 };
 
 export default SForms;

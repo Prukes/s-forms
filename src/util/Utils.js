@@ -1,4 +1,5 @@
 import Constants from "../constants/Constants.js";
+import { v4 as uuidv4 } from "uuid";
 
 export default class Utils {
   /**
@@ -59,5 +60,58 @@ export default class Utils {
     }
 
     return null;
+  }
+
+  static findParent(root, question){
+    const subquestions = Utils.asArray(root[Constants.HAS_SUBQUESTION]);
+
+    if (subquestions.some((q) => q['@id'] === question['@id'])) {
+      return root;
+    } else {
+      for (let subquestion of subquestions) {
+        if(Array.isArray(subquestion[Constants.HAS_SUBQUESTION]) && subquestion[Constants.HAS_SUBQUESTION].length){
+          const res = Utils.findParent(subquestion, question);
+          if (res) return res;
+        }
+      }
+    }
+  }
+
+  static copyNode(node, nameMap) {
+    let newId = uuidv4();
+    let oldId = node['@id'];
+    const lastSlashIndex = oldId.lastIndexOf('/');
+    if(lastSlashIndex != -1){
+      const tmp = oldId.substring(0,lastSlashIndex) + newId;
+      newId = tmp;
+    }
+
+    node['@id'] = newId;
+    node[Constants.IS_QUESTION_COPY] = true;
+    nameMap[oldId] = newId;
+
+    const subquestions = Utils.asArray(node[Constants.HAS_SUBQUESTION]);
+    if(subquestions.length) {
+      for (let sq of subquestions) {
+        Utils.copyNode(sq, nameMap);
+      }
+    }
+  }
+
+  static renamePrecedingQuestionRelations(node, nameMap) {
+    const prevName = node[Constants.HAS_PRECEDING_QUESTION];
+
+
+    if(prevName){
+      const newName = nameMap[prevName['@id']];
+      node[Constants.HAS_PRECEDING_QUESTION] =  {'@id':newName};
+    }
+
+    const subquestions = Utils.asArray(node[Constants.HAS_SUBQUESTION]);
+    if(subquestions.length) {
+      for (let sq of subquestions) {
+        Utils.renamePrecedingQuestionRelations(sq, nameMap);
+      }
+    }
   }
 }

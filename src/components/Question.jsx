@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Accordion } from "react-bootstrap";
+import {Card, Accordion, Button} from "react-bootstrap";
 import JsonLdUtils from "jsonld-utils";
 import PropTypes from "prop-types";
 import Answer from "./Answer";
@@ -16,6 +16,7 @@ import { ConfigurationContext } from "../contexts/ConfigurationContext";
 import classNames from "classnames";
 import QuestionStatic from "./QuestionStatic.jsx";
 import Utils from "../util/Utils.js";
+import QuestionWrapper from "./QuestionWrapper.jsx";
 
 // TODO Remove once the pretty layout is tested
 const PRETTY_ANSWERABLE_LAYOUT = true;
@@ -156,6 +157,13 @@ export default class Question extends React.Component {
     return headerClassName;
   };
 
+  _isDuplicable = () => {
+    if( this.context.options.questionDuplication) return true;
+    if( !FormUtils.isWizardStep(this.props.question) && this.props.cloneQuestion) return true;
+    if( this.props.cloneQuestion) return true;
+    return false;
+  }
+
   render() {
     const question = this.props.question;
     const questionComponent = this.renderQuestion(question);
@@ -247,7 +255,9 @@ export default class Question extends React.Component {
         </>
       );
     } else {
-      return <div>{this._renderQuestionContent()}</div>;
+      return <div>
+        {this._renderQuestionContent()}
+      </div>;
     }
   }
 
@@ -490,7 +500,7 @@ export default class Question extends React.Component {
 
     for (let i = 0; i < subQuestions.length; i++) {
       let question = subQuestions[i];
-      let component = this.context.mapComponent(question, Question);
+      let component = this.context.mapComponent(question, QuestionWrapper);
       let element = null;
 
       if (
@@ -503,6 +513,8 @@ export default class Question extends React.Component {
           question: question,
           onChange: this.handleSubQuestionChange,
           index: i,
+          cloneQuestion: this.props.cloneQuestion,
+          deleteQuestion: this.props.deleteQuestion
         });
       }
       children.push(element);
@@ -549,6 +561,8 @@ Question.propTypes = {
   index: PropTypes.number,
   withoutCard: PropTypes.bool,
   collapsible: PropTypes.bool, // Whether the section is collapsible (if the question is a section)
+  cloneQuestion: PropTypes.func,
+  deleteQuestion: PropTypes.func
 };
 
 Question.defaultProps = {

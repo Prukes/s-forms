@@ -110,6 +110,14 @@
       "label": "Age"
     },
     {
+      "@id": "file-111",
+      "@type": "doc:question",
+      "has_related_question": [],
+      "has-layout-class": "file",
+      "has-preceding-question": "job-9002",
+      "label": "Vyberte soubor"
+    },
+    {
       "@id": "start-date-6817",
       "@type": "doc:question",
       "has_related_question": [],
@@ -146,6 +154,7 @@
         "first-name-6663",
         "last-name-1495",
         "age-1063",
+        "file-111",
         "job-9002"
       ],
       "has-layout-class": "form"

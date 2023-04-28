@@ -1,6 +1,8 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, {useMemo, useState, useEffect} from "react";
 import PropTypes from "prop-types";
 import FormUtils from "../util/FormUtils";
+import Constants from "../constants/Constants.js";
+import Utils from "../util/Utils.js";
 
 const INITIAL_DATA = {};
 const INITIAL_FORM_QUESTIONS_DATA = [];
@@ -8,75 +10,126 @@ const INITIAL_FORM_QUESTIONS_DATA = [];
 const FormQuestionsContext = React.createContext({});
 
 const FormQuestionsProvider = (props) => {
-  const [data, setData] = useState(props.data || INITIAL_DATA);
-  const [formQuestionsData, setFormQuestionsData] = useState(
-    props.formQuestions || INITIAL_FORM_QUESTIONS_DATA
-  );
+    const [data, setData] = useState(props.data || INITIAL_DATA);
+    const [formQuestionsData, setFormQuestionsData] = useState(
+        props.formQuestions || INITIAL_FORM_QUESTIONS_DATA
+    );
 
-  useEffect(() => {
-    if (props.isFormValid) {
-      const isValid = FormUtils.isValid(data);
-      props.isFormValid(isValid);
+    useEffect(() => {
+        if (props.isFormValid) {
+            const isValid = FormUtils.isValid(data);
+            props.isFormValid(isValid);
+        }
+    }, []);
+
+    useEffect(() => {
+        setData(props.data || INITIAL_DATA);
+        setFormQuestionsData(props.formQuestions || INITIAL_FORM_QUESTIONS_DATA);
+    }, [props.data, props.formQuestions]);
+
+    const updateData = (update) => {
+        if (!update) return;
+
+        setData({...data, ...update});
+    };
+
+    const updateFormQuestionsData = (index, update) => {
+        if (!update || index < 0 || index >= formQuestionsData.length) return;
+
+        const newFormQuestionsData = [...formQuestionsData];
+        newFormQuestionsData[index] = {...newFormQuestionsData[index], ...update};
+
+        setFormQuestionsData(newFormQuestionsData);
+
+        if (props.isFormValid) {
+            const isValid = FormUtils.isValid(data);
+            props.isFormValid(isValid);
+        }
+    };
+
+    const getData = () => {
+        return data;
+    };
+
+    const getFormQuestionsData = (index) => {
+        return index === null || index === undefined
+            ? formQuestionsData
+            : formQuestionsData[index];
+    };
+
+    const onFileUpload = (file) => {
+        props.onFileUpload(file);
     }
-  }, []);
 
-  useEffect(() => {
-    setData(props.data || INITIAL_DATA);
-    setFormQuestionsData(props.formQuestions || INITIAL_FORM_QUESTIONS_DATA);
-  }, [props.data, props.formQuestions]);
-
-  const updateData = (update) => {
-    if (!update) return;
-
-    setData({ ...data, ...update });
-  };
-
-  const updateFormQuestionsData = (index, update) => {
-    if (!update || index < 0 || index >= formQuestionsData.length) return;
-
-    const newFormQuestionsData = [...formQuestionsData];
-    newFormQuestionsData[index] = { ...newFormQuestionsData[index], ...update };
-
-    setFormQuestionsData(newFormQuestionsData);
-
-    if (props.isFormValid) {
-      const isValid = FormUtils.isValid(data);
-      props.isFormValid(isValid);
+    const getFile = (fileID) => {
+        props.getFile(fileID);
     }
-  };
 
-  const getData = () => {
-    return data;
-  };
+    const onFileDelete = (file) => {
+        props.onFileDelete(file)
+    }
+    const cloneQuestion = (question) => {
+        const graphCopy = {...data}
+        const questionCopy = JSON.parse(JSON.stringify(question));
+        const nameMap = {};
 
-  const getFormQuestionsData = (index) => {
-    return index === null || index === undefined
-      ? formQuestionsData
-      : formQuestionsData[index];
-  };
+        Utils.copyNode(questionCopy, nameMap);
+        Utils.renamePrecedingQuestionRelations(questionCopy, nameMap)
 
-  const values = useMemo(
-    () => ({
-      updateData,
-      updateFormQuestionsData,
-      getData,
-      getFormQuestionsData,
-    }),
-    [getFormQuestionsData, getData]
-  );
+        questionCopy[Constants.HAS_PRECEDING_QUESTION] = {'@id':question['@id']};
+        const parent = Utils.findParent(graphCopy.root, question);
+        const parentSubquestions = Utils.asArray(parent[Constants.HAS_SUBQUESTION])
 
-  return (
-    <FormQuestionsContext.Provider value={values} {...props}>
-      {props.children}
-    </FormQuestionsContext.Provider>
-  );
+        const nextQuestion = parentSubquestions.find((q) => {
+            const precedingQuestion = q[Constants.HAS_PRECEDING_QUESTION];
+            if(!precedingQuestion || !precedingQuestion['@id']) return false;
+
+            return precedingQuestion['@id'] === question['@id'];
+
+        });
+        parentSubquestions.push(questionCopy);
+
+        if(nextQuestion)
+            nextQuestion[Constants.HAS_PRECEDING_QUESTION] = {'@id':questionCopy['@id']};
+
+        updateData(data, parent);
+
+    }
+
+    const deleteQuestion = (question) => {
+        console.error("Unimplemented!")
+    }
+
+    const values = useMemo(
+        () => ({
+            updateData,
+            updateFormQuestionsData,
+            getData,
+            getFormQuestionsData,
+            onFileUpload,
+            getFile,
+            cloneQuestion,
+            deleteQuestion,
+            onFileDelete
+        }),
+        [getFormQuestionsData, getData]
+    );
+
+    return (
+        <FormQuestionsContext.Provider value={values} {...props}>
+            {props.children}
+        </FormQuestionsContext.Provider>
+    );
 };
 
 FormQuestionsProvider.propTypes = {
-  children: PropTypes.element.isRequired,
-  data: PropTypes.object.isRequired,
-  formQuestions: PropTypes.array.isRequired,
-  isFormValid: PropTypes.func,
+    children: PropTypes.element.isRequired,
+    data: PropTypes.object.isRequired,
+    formQuestions: PropTypes.array.isRequired,
+    isFormValid: PropTypes.func,
+    onFileUpload: PropTypes.func,
+    getFile: PropTypes.func,
+    onFileDelete: PropTypes.func
 };
 
-export { FormQuestionsContext, FormQuestionsProvider };
+export {FormQuestionsContext, FormQuestionsProvider};

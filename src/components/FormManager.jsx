@@ -6,6 +6,7 @@ import FormWindow from "./FormWindow";
 import Card from "react-bootstrap/Card";
 import Question from "./Question";
 import FormUtils from "../util/FormUtils.js";
+import QuestionWrapper from "./QuestionWrapper.jsx";
 
 class FormManager extends React.Component {
   getFormData = () => {
@@ -37,13 +38,15 @@ class FormManager extends React.Component {
   };
 
   _mapQuestion(question, index) {
-    let component = this.props.mapComponent(question, Question);
+    let component = this.props.mapComponent(question, QuestionWrapper);
     return React.createElement(component, {
       key: question["@id"],
       question: question,
       onChange: (index, change) =>
         this.handleStepChange(question, index, change),
       index: index,
+      cloneQuestion: this.context.cloneQuestion,
+      deleteQuestion: this.context.deleteQuestion
     });
   }
 

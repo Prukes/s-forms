@@ -45,6 +45,7 @@ export default class Constants {
     COLLAPSED: "collapsed",
     EMPHASISED: "emphasised",
     EMPHASISE_ON_RELEVANT: "emphasise-on-relevant",
+    FILE: "file",
     CATEGORY: [
       "category-1",
       "category-2",
@@ -145,6 +146,10 @@ export default class Constants {
     "http://onto.fel.cvut.cz/ontologies/form/not-answered-question";
   static ANSWERED_QUESTION =
     "http://onto.fel.cvut.cz/ontologies/form/answered-question";
+  static FILE_PREFIX =
+      "http://onto.fel.cvut.cz/ontologies/form/file";
+  static IS_QUESTION_COPY =
+      "http://onto.fel.cvut.cz/ontologies/form/is-question-copy";
 
   static RDFS_LABEL = JsonLdUtils.RDFS_LABEL;
   static RDFS_COMMENT = JsonLdUtils.RDFS_COMMENT;
