@@ -4,7 +4,6 @@ import { FormQuestionsContext } from "../../contexts/FormQuestionsContext";
 import Question from "../Question";
 import PropTypes from "prop-types";
 import FormUtils from "../../util/FormUtils.js";
-import QuestionWrapper from "../QuestionWrapper.jsx";
 
 export default class WizardStep extends React.Component {
   constructor(props) {
@@ -52,31 +51,16 @@ export default class WizardStep extends React.Component {
     });
   };
 
-  _mapQuestion(question, index) {
-    let component = this.props.mapComponent(question, QuestionWrapper);
-    return React.createElement(component, {
-      key: question["@id"],
-      question: question,
-      onChange: this.onChange,
-      collapsible: FormUtils.isAnswerable(question),
-      index: index,
-      cloneQuestion: this.context.cloneQuestion,
-      deleteQuestion: this.context.deleteQuestion
-    });
-  }
-
   render() {
     const question = this.context.getFormQuestionsData([this.props.index]);
-    const component = this._mapQuestion(question, this.props.index);
     return (
       <React.Fragment>
-        {/*<Question             //tady se zeptat mira */}
-        {/*  question={question}*/}
-        {/*  onChange={this.onChange}*/}
-        {/*  collapsible={FormUtils.isAnswerable(question)}*/}
-        {/*  cloneQuestion={this.context.cloneQuestion}*/}
-        {/*/>*/}
-        {component}
+        <Question
+          question={question}
+          onChange={this.onChange}
+          collapsible={FormUtils.isAnswerable(question)}
+          cloneQuestion={this.context.cloneQuestion}
+        />
         {this.props.options.wizardStepButtons &&
           this._renderWizardStepButtons()}
       </React.Fragment>

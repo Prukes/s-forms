@@ -78,17 +78,13 @@ export default class Utils {
   }
 
   static copyNode(node, nameMap) {
-    let newId = uuidv4();
+    let newId = `${Constants.QUESTION}/${uuidv4()}`;
     let oldId = node['@id'];
-    const lastSlashIndex = oldId.lastIndexOf('/');
-    if(lastSlashIndex != -1){
-      const tmp = oldId.substring(0,lastSlashIndex) + newId;
-      newId = tmp;
-    }
 
     node['@id'] = newId;
     node[Constants.IS_QUESTION_COPY] = true;
     nameMap[oldId] = newId;
+    delete node[Constants.HAS_ANSWER];
 
     const subquestions = Utils.asArray(node[Constants.HAS_SUBQUESTION]);
     if(subquestions.length) {

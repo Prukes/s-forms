@@ -10,6 +10,7 @@ export default class Constants {
    * Contains mainly definition of constants used to parse the form declaration.
    */
   static FORM = "http://onto.fel.cvut.cz/ontologies/documentation/form";
+  static QUESTION = "http://onto.fel.cvut.cz/ontologies/documentation/question";
   static HAS_SUBQUESTION =
     "http://onto.fel.cvut.cz/ontologies/documentation/has_related_question";
   static HAS_ANSWER =

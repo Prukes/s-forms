@@ -58,15 +58,21 @@ const FormQuestionsProvider = (props) => {
     };
 
     const onFileUpload = (file) => {
-        props.onFileUpload(file);
+        if(props.onFileUpload !== undefined){
+            props.onFileUpload(file);
+        }
     }
 
     const getFile = (fileID) => {
-        props.getFile(fileID);
+        if(props.getFile !== undefined){
+            return props.getFile(fileID);
+        }
     }
 
     const onFileDelete = (file) => {
-        props.onFileDelete(file)
+        if(props.onFileDelete !== undefined){
+            props.onFileDelete(file)
+        }
     }
     const cloneQuestion = (question) => {
         const graphCopy = {...data}

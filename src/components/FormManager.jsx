@@ -6,7 +6,6 @@ import FormWindow from "./FormWindow";
 import Card from "react-bootstrap/Card";
 import Question from "./Question";
 import FormUtils from "../util/FormUtils.js";
-import QuestionWrapper from "./QuestionWrapper.jsx";
 
 class FormManager extends React.Component {
   getFormData = () => {
@@ -38,7 +37,7 @@ class FormManager extends React.Component {
   };
 
   _mapQuestion(question, index) {
-    let component = this.props.mapComponent(question, QuestionWrapper);
+    let component = this.props.mapComponent(question, Question);
     return React.createElement(component, {
       key: question["@id"],
       question: question,

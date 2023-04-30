@@ -4,9 +4,46 @@ import HelpIcon from "./HelpIcon.jsx";
 import LinkIcon from "./LinkIcon.jsx";
 import QuestionCommentIcon from "./comment/QuestionCommentIcon.jsx";
 import JsonLdUtils from "jsonld-utils";
+import FormUtils from "../util/FormUtils.js";
+import {BiDuplicate} from "react-icons/bi";
+import {Button} from "react-bootstrap";
 
 export default class QuestionStatic {
-  static renderIcons(question, options, onCommentChange, showIcon) {
+  static isDuplicable(question){
+      //guard clause for section
+      if (!question) return false;
+      if (FormUtils.isWizardStep(question)) return false;
+      if (FormUtils.isHidden(question)) return false;
+
+      if (FormUtils.isFileUpload(question)) return true;
+      if (FormUtils.isSection(question)) return true;
+      if (FormUtils.isCalendar(question)) return true;
+      if (FormUtils.isCheckbox(question)) return true;
+      if (FormUtils.isDate(question)) return true;
+      if (FormUtils.isTime(question)) return true;
+      if (FormUtils.isDateTime(question)) return true;
+      if (FormUtils.isMaskedInput(question)) return true;
+      if (FormUtils.isTextarea(question)) return true;
+      if (FormUtils.isText(question)) return true;
+      if (FormUtils.isTypeahead(question)) return true;
+      if (FormUtils.isSparqlInput(question)) return true;
+      if (FormUtils.getCategory(question)) return true;
+
+      //default to false for any other question types
+      return false;
+
+  }
+  static isCopy = (question) => {
+    const value = question[Constants.IS_QUESTION_COPY];
+    return !!value;
+  }
+
+  static getColor = (question) => {
+    if (FormUtils.isSection(question))
+      return 'black';
+  }
+
+  static renderIcons(question, options, onCommentChange, showIcon, cloneQuestion) {
     let icons;
     if (options.icons) icons = options.icons;
     else icons = Constants.DEFAULT_OPTIONS.icons;
@@ -54,6 +91,14 @@ export default class QuestionStatic {
         );
       }
     }
+    if(this.isDuplicable(question) && showIcon){
+      iconsArray.push(
+          <li key={`${question['@id']}-duplication-button`} className="icon-list-item">
+            {this.getDuplicationIconButton(question, cloneQuestion)}
+          </li>
+      );
+    }
+
 
     return <ol className="icon-list-items">{iconsArray}</ol>;
   }
@@ -117,6 +162,21 @@ export default class QuestionStatic {
     if (iconList) return iconList.find((icon) => icon.id === iconName);
     return null;
   };
+
+  static getDuplicationIconButton(question, cloneQuestion){
+    return <div>
+      <Button
+          id={question["@id"]}
+          style={{padding: 0}}
+          variant={"link"}
+          onClick={() => {
+            cloneQuestion(question);
+          }}
+      >
+        <BiDuplicate color={this.getColor(question)}/>
+      </Button>
+    </div>;
+  }
 
   static getIconComponent(icon, question, options, onCommentChange, showIcon) {
     let iconClassname;

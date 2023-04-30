@@ -8,6 +8,7 @@ import form2 from "./assets/form/form2.json"; // form without wizard steps (prou
 import touristDestinationForm1 from "./assets/form/touristDestinationForm1.json";
 import touristDestinationForm2 from "./assets/form/touristDestinationForm2.json";
 import occurrenceReportingForm from "./assets/form/occurrenceReportingForm.json";
+import mondisForm from "./assets/form/form_mondis_5.json";
 
 import queryString from "query-string";
 import Constants from "../constants/Constants";
@@ -124,4 +125,8 @@ TouristDestinationForm2.args = {
 export const OccurenceReportingForm = Template.bind({});
 OccurenceReportingForm.args = {
   form: occurrenceReportingForm,
+};
+export const MondisForm = Template.bind({});
+MondisForm.args = {
+  form: mondisForm,
 };

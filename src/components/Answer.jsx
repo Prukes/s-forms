@@ -168,8 +168,6 @@ const Answer = (props) => {
             title={title}
             value={value}
             onChange={handleValueChange}
-            onFileUpload={props.onFileUpload}
-            getFile={props.getFile}
         />
     );
   };
@@ -188,7 +186,8 @@ const Answer = (props) => {
           props.question,
           options,
           props.onCommentChange,
-          props.showIcon
+          props.showIcon,
+          props.cloneQuestion
         )}
       </div>
     );
@@ -234,6 +233,7 @@ Answer.propTypes = {
   onCommentChange: PropTypes.func.isRequired,
   index: PropTypes.number,
   icons: PropTypes.object,
+  cloneQuestion: PropTypes.func.isRequired
 };
 
 export default Answer;

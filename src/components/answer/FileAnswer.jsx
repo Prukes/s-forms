@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import PropTypes from "prop-types";
-import {Button, Col, Container, Form, FormGroup, Row} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 import {FormQuestionsContext} from "../../contexts/FormQuestionsContext.js";
 import Constants from "../../constants/Constants.js";
 import {v4 as uuidv4} from 'uuid';
@@ -11,6 +11,7 @@ const FileAnswer = (props) => {
     const [fileID, setFileID] = useState(props.value);
     const [file, setFile] = useState(null);
     const context = useContext(FormQuestionsContext);
+    const fileInputRef = useRef(null);
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files && e.target.files[0];
@@ -38,6 +39,9 @@ const FileAnswer = (props) => {
         }
     };
 
+    function handleFileButtonClick() {
+        fileInputRef.current.click();
+    }
     const handleFileRemove = () => {
         const input = document.getElementById(`${props.question['@id']}-file-input`);
         input.value = "";
@@ -50,30 +54,43 @@ const FileAnswer = (props) => {
 
     }
 
-    const init = useEffect(() => {
-        const fileTmp = context.getFile(props.question[Constants.HAS_ANSWER]);
-        if (fileTmp) {
-            setFile(fileTmp);
+    useEffect(() => {
+        const getFile = async () => {
+            console.log(props.question[Constants.HAS_ANSWER]);
+            if(context.getFile !== undefined){
+                const fileTmp = await context.getFile(props.question[Constants.HAS_ANSWER]);
+                console.log(fileTmp)
+                if (fileTmp) {
+                    setFile(fileTmp);
+                }
+            }
         }
+        getFile()
     }, []);
 
-    return (
-        <FormGroup size="small">
-            <Form.Label>{props.label}</Form.Label>
-            <input id={`${props.question['@id']}-file-input`} type="file" onChange={handleFileChange}/>
-            {file &&
-                <Container>
-                    <Col className={"w-75"}>
-                        {fileID && <p>Selected file: {fileID}</p>}
-                    </Col>
-                        <Col className={"w-25"}>
-                            <Button variant={"link"} onClick={handleFileRemove}>
-                                <BiTrash color={"red"} style={{padding: 0}}></BiTrash>
-                            </Button>
-                        </Col>
-                </Container>
-            }
-        </FormGroup>
+    return(
+        <React.Fragment>
+            <Form.Group size={"small"} className={""}>
+
+                <Form.Label>{props.label}</Form.Label>
+                <Form.File id={`${props.question['@id']}-file-input`}
+                    className="d-none"
+                    label="Upload file"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                    // accept=".pdf,.doc,.docx,.txt,.xlsx,.csv,image/*"
+                />
+            </Form.Group>
+            <Button onClick={handleFileButtonClick}>Upload file</Button>
+            {file && (
+                <div className="mt-2">
+                    <p>File: {fileID}</p>
+                    <Button variant={"link"} onClick={handleFileRemove}>
+                        <BiTrash color={"red"} style={{padding: 0}}></BiTrash>
+                    </Button>
+                </div>
+            )}
+        </React.Fragment>
     );
 
 };

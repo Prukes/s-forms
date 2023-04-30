@@ -315,18 +315,6 @@ input:disabled {
   pointer-events: auto;
 }
 
-.wrapper-container{
-  position: relative;
-  padding: 10px;
-}
-
-.wrapper-button{
-  position: absolute;
-  margin-top: 10px;
-  margin-right: 10px;
-  z-index: 1;
-}
-
 @keyframes emphasiseOnRelevant {
   0% {
     display: none;
