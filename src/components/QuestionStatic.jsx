@@ -10,28 +10,8 @@ import {Button} from "react-bootstrap";
 
 export default class QuestionStatic {
   static isDuplicable(question){
-      //guard clause for section
       if (!question) return false;
-      if (FormUtils.isWizardStep(question)) return false;
-      if (FormUtils.isHidden(question)) return false;
-
-      if (FormUtils.isFileUpload(question)) return true;
-      if (FormUtils.isSection(question)) return true;
-      if (FormUtils.isCalendar(question)) return true;
-      if (FormUtils.isCheckbox(question)) return true;
-      if (FormUtils.isDate(question)) return true;
-      if (FormUtils.isTime(question)) return true;
-      if (FormUtils.isDateTime(question)) return true;
-      if (FormUtils.isMaskedInput(question)) return true;
-      if (FormUtils.isTextarea(question)) return true;
-      if (FormUtils.isText(question)) return true;
-      if (FormUtils.isTypeahead(question)) return true;
-      if (FormUtils.isSparqlInput(question)) return true;
-      if (FormUtils.getCategory(question)) return true;
-
-      //default to false for any other question types
-      return false;
-
+    return !!FormUtils.isDuplicable(question);
   }
   static isCopy = (question) => {
     const value = question[Constants.IS_QUESTION_COPY];
@@ -91,7 +71,7 @@ export default class QuestionStatic {
         );
       }
     }
-    if(this.isDuplicable(question) && showIcon){
+    if(this.isDuplicable(question)){
       iconsArray.push(
           <li key={`${question['@id']}-duplication-button`} className="icon-list-item">
             {this.getDuplicationIconButton(question, cloneQuestion)}

@@ -144,6 +144,14 @@ export default class FormUtils {
     );
   }
 
+  static isDuplicable(question){
+    return JsonLdUtils.hasValue(
+        question,
+        Constants.IS_QUESTION_DUPLICABLE,
+        true
+    );
+  }
+
   static isSparqlInput(question) {
     return JsonLdUtils.hasValue(
       question,

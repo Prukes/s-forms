@@ -151,6 +151,8 @@ export default class Constants {
       "http://onto.fel.cvut.cz/ontologies/form/file";
   static IS_QUESTION_COPY =
       "http://onto.fel.cvut.cz/ontologies/form/is-question-copy";
+  static IS_QUESTION_DUPLICABLE =
+      "http://onto.fel.cvut.cz/ontologies/form/is-question-duplicable";
 
   static RDFS_LABEL = JsonLdUtils.RDFS_LABEL;
   static RDFS_COMMENT = JsonLdUtils.RDFS_COMMENT;

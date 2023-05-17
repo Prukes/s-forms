@@ -78,10 +78,12 @@ export default class Utils {
   }
 
   static copyNode(node, nameMap) {
-    let newId = `${Constants.QUESTION}/${uuidv4()}`;
+    let newId = `${Constants.QUESTION}/${uuidv4()}-q`;
+    let newOriginId = `${newId}-qo`; //append "qo" to question ID as the new question origin
     let oldId = node['@id'];
 
     node['@id'] = newId;
+    node[Constants.HAS_QUESTION_ORIGIN] = newOriginId;
     node[Constants.IS_QUESTION_COPY] = true;
     nameMap[oldId] = newId;
     delete node[Constants.HAS_ANSWER];
