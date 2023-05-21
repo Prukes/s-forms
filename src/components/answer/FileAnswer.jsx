@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import PropTypes from "prop-types";
-import {Button, Form} from "react-bootstrap";
+import {Button, ButtonGroup, Form} from "react-bootstrap";
 import {FormQuestionsContext} from "../../contexts/FormQuestionsContext.js";
 import Constants from "../../constants/Constants.js";
 import {v4 as uuidv4} from 'uuid';
@@ -68,29 +68,38 @@ const FileAnswer = (props) => {
         getFile()
     }, []);
 
-    return(
-        <React.Fragment>
-            <Form.Group size={"small"} className={""}>
+    const getButtonName = () => {
+        return !file ? "Upload file" : "Change file";
+    }
 
-                <Form.Label>{props.label}</Form.Label>
+    return(
+            <Form.Group size={"small"}>
+                <Form.Label className={"w-100"}>{props.label}</Form.Label>
                 <Form.File id={`${props.question['@id']}-file-input`}
                     className="d-none"
                     label="Upload file"
                     onChange={handleFileChange}
                     ref={fileInputRef}
-                    // accept=".pdf,.doc,.docx,.txt,.xlsx,.csv,image/*"
+                    accept="image/*, audio/*, video/*"
                 />
-            </Form.Group>
-            <Button onClick={handleFileButtonClick}>Upload file</Button>
-            {file && (
-                <div className="mt-2">
-                    <p>File: {fileID}</p>
-                    <Button variant={"link"} onClick={handleFileRemove}>
-                        <BiTrash color={"red"} style={{padding: 0}}></BiTrash>
-                    </Button>
+                <div>
+                    <ButtonGroup>
+                        <Button onClick={handleFileButtonClick}> {getButtonName()}</Button>
+                        {file &&<Button variant={"link"} onClick={handleFileRemove}>
+                            <BiTrash color={"red"} style={{padding: 0}}></BiTrash>
+                        </Button>}
+                    </ButtonGroup>
+
+                    {file && (
+                        <div className="mt-2">
+                            {file.fileName && <p className={"text-wrap"}>File name: {file.fileName}</p>}
+                            <p className={"text-wrap"}>FileID: {fileID}</p>
+                        </div>
+                    )}
                 </div>
-            )}
-        </React.Fragment>
+            </Form.Group>
+
+
     );
 
 };

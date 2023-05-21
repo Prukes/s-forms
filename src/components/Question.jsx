@@ -361,7 +361,7 @@ export default class Question extends React.Component {
           onMouseEnter={this._onMouseEnterHandler}
           onMouseLeave={this._onMouseLeaveHandler}
         >
-          <div className="answer-content" style={this._getAnswerWidthStyle()}>
+          <div className="answer-content mw-100" style={this._getAnswerWidthStyle()}>
             <Answer
               index={i}
               answer={answers[i]}

@@ -147,7 +147,7 @@ export default class QuestionStatic {
     return <div>
       <Button
           id={question["@id"]}
-          style={{padding: 0}}
+          style={{padding: 0, marginLeft: "10px"}}
           variant={"link"}
           onClick={() => {
             cloneQuestion(question);
