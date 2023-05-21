@@ -6,7 +6,6 @@ import Constants from "../../constants/Constants.js";
 import {v4 as uuidv4} from 'uuid';
 import {BiTrash} from "react-icons/bi";
 
-
 const FileAnswer = (props) => {
     const [fileID, setFileID] = useState(props.value);
     const [file, setFile] = useState(null);
@@ -28,7 +27,7 @@ const FileAnswer = (props) => {
                     const fileID = `${Constants.FILE_PREFIX}/${id}`;
 
                     setFileID(fileID);
-                    setFile(fileData);
+                    setFile({fileName: fileName, type: type, id: fileID, data: fileData});
                     props.onChange(fileID);
                     if(context.onFileUpload !== undefined){
                         context.onFileUpload({fileName: fileName, type: type, id: fileID, data: fileData});

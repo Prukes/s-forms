@@ -47,6 +47,12 @@ export interface SFormsProps {
   loader?: React.ElementType; // default <div>Loading SForms...</div>
 }
 
+export interface FileType {
+  fileName: string;
+  id: string;
+  data: object;
+}
+
 type ArrayLengthMutationKeys =
   | "category-1"
   | "category-2"
