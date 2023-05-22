@@ -18,6 +18,7 @@ const FileAnswer = (props) => {
             const fileName = selectedFile.name;
             const type = selectedFile.type;
             const id = uuidv4();
+            const prevFileID = fileID;
 
             const reader = new FileReader();
             reader.onload = (event) => {
@@ -30,7 +31,7 @@ const FileAnswer = (props) => {
                     setFile({fileName: fileName, type: type, id: fileID, data: fileData});
                     props.onChange(fileID);
                     if(context.onFileUpload !== undefined){
-                        context.onFileUpload({fileName: fileName, type: type, id: fileID, data: fileData});
+                        context.onFileUpload({fileName: fileName, type: type, id: fileID, data: fileData}, prevFileID);
                     }
                 }
             };

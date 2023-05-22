@@ -57,9 +57,9 @@ const FormQuestionsProvider = (props) => {
             : formQuestionsData[index];
     };
 
-    const onFileUpload = (file) => {
+    const onFileUpload = (file, prevFileID) => {
         if(props.onFileUpload !== undefined){
-            props.onFileUpload(file);
+            props.onFileUpload(file, prevFileID);
         }
     }
 
